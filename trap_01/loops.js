@@ -1,20 +1,29 @@
 // Edit this file while running the server to update loops in real time
 
-// Resets pulse to start loops together
-pulse = 0;
-
-loop('pulse', async (ctx) => {
-    pulse++;
-    if (pulse === 16) {
-        pulse = 0;
-    }
-    ctx.sleep(T/4)
-});
+last = Date.now();
 
 loop('synth', async (ctx) => {
-    const n = _sample(notes);
+    const since = Date.now() - last;
+    last = Date.now();
+
+    // Update chord state
+    chord = chords[next4()];
+    const chr = notes.map(n => scale[n + chord]); 
+    chr.forEach(n => {
+        SYNTH().playNote(n, 1, { velocity: 0.3 })
+            .stopNote(n, 1, { time: '+' + (since - 50)  })
+    });
+
+    ctx.sleep(T/1 * 2);
+});
+
+loop('leadSynth', async (ctx) => {
+    const since = Date.now() - ctx.last;
+    ctx.last = Date.now();
+
+    const n = _sample(notes.map(n => scale[n + chord])); 
     SYNTH2().playNote(n, 1, { velocity: 0.3 })
-        .stopNote(n, 1, { time: '+100' })
+        .stopNote(n, 1, { time: '+' + (since - 50)  })
 
     ctx.sleep(T/4);
 });
