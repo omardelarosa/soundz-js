@@ -79,14 +79,34 @@ chord = 0;
 notes = [0, 2, 4, 6];
 
 // Get MIDI outputs
+NOTE_KICK = 'A0';
+NOTE_SNARE = 'A1';
+NOTE_HAT = 'A2';
 
-// TR-08 - External USB device
-TR = () => getOutputs()[2];
+synth = new Tone.PolySynth(6, Tone.Synth, {
+    oscillator: {
+        partials: [0, 2, 3, 4],
+    },
+}).toMaster();
 
-// D-05 - External USB device
-SYNTH = () => getOutputs()[3];
+sampler = new Tone.Sampler(
+    {
+        [NOTE_KICK]: 'BD.WAV', // Kick
+        [NOTE_SNARE]: 'SD.WAV', // Snare
+        [NOTE_HAT]: 'CH.WAV', // Closed Hats
+    },
+    {
+        release: 1,
+        baseUrl: '/samples/',
+    },
+).toMaster();
 
-SYNTH2 = () => getOutputs()[4];
+playInst = (inst, note, dur = 50) => {
+    inst.triggerAttack(note);
+    setTimeout(() => {
+        inst.triggerRelease(note);
+    }, dur);
+};
 
-// Define loops once on init
-// bufferQueue.push(`${BUFFER_PATH}/loops.js`);
+// Define loops once
+bufferQueue.push(`${BUFFER_PATH}/loops.js`);
