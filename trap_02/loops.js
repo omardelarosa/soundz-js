@@ -5,9 +5,7 @@ last = Date.now();
 loop('synth', async ctx => {
     const since = Date.now() - last;
     last = Date.now();
-
-    // console.log('since...', since);
-    if (pulse % 48 === 0) console.clear();
+    console.log('since...', since, ctx.tick);
     // Update chord state
     chord = chords[next4()];
     const chr = notes.map(n => scale[n + chord]);
@@ -21,17 +19,18 @@ loop('synth', async ctx => {
 loop('leadSynth', async ctx => {
     const since = Date.now() - ctx.last;
     ctx.last = Date.now();
-
-    const n = _sample(notes.map(n => scale[n + chord]));
-    playInst(synth, n, 100);
-    // SYNTH2()
-    //     .playNote(n, 1, { velocity: 0.3 })
-    //     .stopNote(n, 1, { time: '+' + (since - 50) });
-
+    const n = _sample(
+        notes.map(n => {
+            return scale[n + chord];
+        }),
+    );
+    playInst(leadSynth, n, 100);
     ctx.sleep(T / 4);
 });
 
 loop('kicks', async ctx => {
+    const pulse = ctx.tick % 16;
+    // Switch pattern on the 0
     if (pulse === 0) kick_pattern = _sample(kicks);
     if (!kick_pattern[pulse]) return ctx.sleep(T / 4);
 
@@ -66,7 +65,10 @@ loop('hats', async ctx => {
 });
 
 loop('snares', async ctx => {
-    if (pulse % 8 === 0) snares_pattern = _sample(snares);
+    const pulse = ctx.tick % 16;
+    console.log('pulse', pulse, ctx.tick);
+    // Switch pattern on the 0
+    if (pulse === 0) snares_pattern = _sample(snares);
     if (!snares_pattern[pulse]) return ctx.sleep(T / 4);
     playInst(sampler, NOTE_SNARE);
     ctx.sleep(T / 4);

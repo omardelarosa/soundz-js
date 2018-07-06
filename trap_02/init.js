@@ -22,19 +22,9 @@ nextOf = max => {
 
 next4 = nextOf(4);
 
-// Global pulse
-loop('pulse', async ctx => {
-    pulse++;
-    if (pulse === 16) {
-        pulse = 0;
-    }
-
-    ctx.sleep(T / 4);
-});
-
 kicks = [
-    fmt('1000 0010 0001 0010'),
-    fmt('4000 0000 0040 0040'),
+    fmt('4040 0000 0004 0000'),
+    fmt('4000 0040 0040 0000'),
     // fmt('4020 0000 4000 0000'),
     // fmt('4020 0010 4020 0020'),
     // fmt('4030 0020 4020 1000')
@@ -54,11 +44,11 @@ hats = [
 hats_pattern = _sample(hats);
 
 snares = [
-    fmt('0000 4000'),
-    fmt('0100 4000'),
-    fmt('1000 4000'),
-    fmt('0100 4100'),
-    fmt('0001 3001'),
+    fmt('0000 4000 0000 4000'),
+    // fmt('0100 4000'),
+    // fmt('1000 4000'),
+    // fmt('0100 4100'),
+    // fmt('0001 3011'),
 ];
 
 snares_pattern = _sample(snares);
@@ -83,24 +73,6 @@ NOTE_KICK = 'A0';
 NOTE_SNARE = 'A1';
 NOTE_HAT = 'A2';
 
-synth = new Tone.PolySynth(6, Tone.Synth, {
-    oscillator: {
-        partials: [0, 2, 3, 4],
-    },
-}).toMaster();
-
-sampler = new Tone.Sampler(
-    {
-        [NOTE_KICK]: 'BD.WAV', // Kick
-        [NOTE_SNARE]: 'SD.WAV', // Snare
-        [NOTE_HAT]: 'CH.WAV', // Closed Hats
-    },
-    {
-        release: 1,
-        baseUrl: '/samples/',
-    },
-).toMaster();
-
 playInst = (inst, note, dur = 50) => {
     inst.triggerAttack(note);
     setTimeout(() => {
@@ -108,5 +80,5 @@ playInst = (inst, note, dur = 50) => {
     }, dur);
 };
 
-// Define loops once
-bufferQueue.push(`${BUFFER_PATH}/loops.js`);
+// Define synths and loops once
+sqcr.bufferQueue.push(`${BUFFER_PATH}/synths.js`);
