@@ -1,0 +1,13 @@
+{
+    "libs": [
+        "/node_modules/webmidi/webmidi.min.js",
+        "/lib/browser.js",
+        "/lib/audiosynth.js",
+        "/node_modules/osc/dist/osc-browser.js",
+        "/node_modules/tonal/build/transpiled.js",
+        "/node_modules/tone/build/Tone.min.js",
+        "/setup.js",
+        "/trap_02/init.js",
+        "/trap_02/synths.js"
+    ]
+}

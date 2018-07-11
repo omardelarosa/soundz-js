@@ -33,13 +33,18 @@ kicks = [
 kick_pattern = _sample(kicks);
 
 hats = [
-    [T / 4, 4],
-    [T / 12, 6],
-    [T / 4, 4],
-    [T / 12, 6],
-    [T / 4, 4],
-    [T / 8, 8],
+    [M / 16, 4],
+    [M / 16, 4],
+    [M / 16, 4],
+    [M / 16, 4],
+    // [M / 12, 3],
+    // [M / 32, 8],
+    // [M / 24, 6],
+    // [M / 24, 6],
 ];
+
+// Keeps track of hi-hat hits
+h_counter = 0;
 
 hats_pattern = _sample(hats);
 
@@ -53,9 +58,38 @@ snares = [
 
 snares_pattern = _sample(snares);
 
+LETTERS = 'ABCDEFG';
+
 KEY = ['F4', 'major'];
 
 makeScale = note => Tonal.scale(KEY[1]).map(Tonal.transpose(note));
+
+noteParse = note => {
+    const parts = note.split('');
+    let letter;
+    let isSharp = false;
+    let oct = 0;
+    // Has flat
+    if (parts.length === 3) {
+        let idx = LETTERS.indexOf(parts[0]);
+        if (idx === -1) throw new Error('Invalid note: ' + note);
+        else if (idx === 0) {
+            idx = LETTERS.length - 1;
+        } else {
+            idx = idx - 1;
+        }
+        letter = LETTERS[idx];
+        isSharp = true;
+        oct = parseInt(parts[2]);
+    } else {
+        letter = parts[0];
+        oct = parseInt(parts[1]);
+    }
+    return {
+        note: letter + (isSharp ? '#' : ''),
+        oct,
+    };
+};
 
 // Make an array of notes
 scale = [
@@ -72,13 +106,17 @@ notes = [0, 2, 4, 6];
 NOTE_KICK = 'A0';
 NOTE_SNARE = 'A1';
 NOTE_HAT = 'A2';
+NOTE_CLAP = 'B1';
 
 playInst = (inst, note, dur = 50) => {
-    inst.triggerAttack(note);
-    setTimeout(() => {
-        inst.triggerRelease(note);
-    }, dur);
+    let timer;
+    try {
+        inst.triggerAttack(note);
+        timer = setTimeout(() => {
+            inst.triggerRelease(note);
+        }, dur);
+    } catch (e) {
+        clearTimeout(timer);
+        console.log('Instrument error!', e.message);
+    }
 };
-
-// Define synths and loops once
-sqcr.bufferQueue.push(`${BUFFER_PATH}/synths.js`);

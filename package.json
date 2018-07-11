@@ -1,11 +1,22 @@
 {
   "name": "soundz",
   "version": "1.0.0",
-  "description": "",
+  "description": "A collection of sound sketches to be used with `sqcr` cli.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omardelarosa/soundz-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omardelarosa/soundz-js/issues"
+  },
+  "homepage": "https://github.com/omardelarosa/soundz-js#readme",
+  "dependencies": {
+    "sqcr": "file:../sqcr"
+  }
 }

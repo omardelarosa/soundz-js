@@ -1,43 +1,42 @@
 // Edit this file while running the server to update loops in real time
 
-last = Date.now();
-
 loop('synth', async ctx => {
-    const since = Date.now() - last;
-    last = Date.now();
-    console.log('since...', since, ctx.tick);
     // Update chord state
     chord = chords[next4()];
     const chr = notes.map(n => scale[n + chord]);
     chr.forEach(n => {
-        playInst(synth, n, 1000);
+        playInst(synth, n, 2 * 1000);
+        // const { note, oct } = noteParse(n);
+        // Synth.play('organ', note, oct, 2);
     });
 
-    ctx.sleep((T / 1) * 2);
+    ctx.sleep((M / 1) * 2);
 });
 
 loop('leadSynth', async ctx => {
-    const since = Date.now() - ctx.last;
-    ctx.last = Date.now();
+    // const since = Date.now() - ctx.last;
+    // ctx.last = Date.now();
     const n = _sample(
         notes.map(n => {
             return scale[n + chord];
         }),
     );
+    // const { note, oct } = noteParse(n);
+    // Synth.play('piano', note, oct, 0.2);
     playInst(leadSynth, n, 100);
-    ctx.sleep(T / 4);
+    ctx.sleep(M / 16);
 });
 
 loop('kicks', async ctx => {
     const pulse = ctx.tick % 16;
     // Switch pattern on the 0
     if (pulse === 0) kick_pattern = _sample(kicks);
-    if (!kick_pattern[pulse]) return ctx.sleep(T / 4);
+    if (!kick_pattern[pulse]) return ctx.sleep(M / 16);
 
     // Play kick beat
     playInst(sampler, NOTE_KICK);
 
-    ctx.sleep(T / 4);
+    ctx.sleep(M / 16);
 });
 
 h_counter = 0;
@@ -61,15 +60,14 @@ loop('hats', async ctx => {
     } else {
         h_counter++;
     }
-    ctx.sleep(t);
+    ctx.sleep(M / 16);
 });
 
 loop('snares', async ctx => {
     const pulse = ctx.tick % 16;
-    console.log('pulse', pulse, ctx.tick);
     // Switch pattern on the 0
     if (pulse === 0) snares_pattern = _sample(snares);
-    if (!snares_pattern[pulse]) return ctx.sleep(T / 4);
-    playInst(sampler, NOTE_SNARE);
-    ctx.sleep(T / 4);
+    if (!snares_pattern[pulse]) return ctx.sleep(M / 16);
+    playInst(sampler, NOTE_CLAP);
+    ctx.sleep(M / 16);
 });

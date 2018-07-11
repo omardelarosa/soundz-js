@@ -1,8 +1,17 @@
 // Tone.js stuff
-reverb = new Tone.Reverb({
+freeverb = new Tone.Freeverb({
     wet: 0.8,
     decay: '8n',
 }).toMaster();
+
+reverb = new Tone.Reverb({
+    wet: 0.2,
+    decay: '8n',
+}).toMaster();
+
+delay = new Tone.FeedbackDelay(0.1);
+
+tremolo = new Tone.Tremolo(9, 0.75).toMaster().start();
 
 feedbackDelay = new Tone.PingPongDelay({
     delayTime: '8n',
@@ -11,33 +20,22 @@ feedbackDelay = new Tone.PingPongDelay({
 }).toMaster();
 
 synth = new Tone.PolySynth(6, Tone.Synth, {
+    volume: 1,
     oscillator: {
         partials: [0, 2, 3, 4],
     },
 })
-    .connect(reverb)
+    .chain(tremolo, freeverb)
     .toMaster();
-
-// synth = new Tone.FMSynth({
-//     volume: 1,
-//     envelope: {
-//         attack: 0.05,
-//     },
-//     // oscillator: {
-//     //     partials: [0, 2, 3, 4],
-//     // },
-// })
-//     // .connect(reverb)
-//     // .connect(feedbackDelay)
-//     .toMaster();
 
 leadSynth = new Tone.PolySynth(6, Tone.Synth, {
     oscillator: {
         partials: [0, 2, 3, 4],
     },
 })
-    .connect(reverb)
-    .connect(feedbackDelay)
+    .chain(delay, freeverb)
+    // .connect(reverb)
+    // .connect(feedbackDelay)
     .toMaster();
 
 sampler = new Tone.Sampler(
@@ -45,11 +43,12 @@ sampler = new Tone.Sampler(
         [NOTE_KICK]: 'BD.WAV', // Kick
         [NOTE_SNARE]: 'SD.WAV', // Snare
         [NOTE_HAT]: 'CH.WAV', // Closed Hats
+        [NOTE_CLAP]: 'CP.WAV', // Clap
     },
     {
         release: 1,
         baseUrl: '/samples/',
     },
-).toMaster();
-
-sqcr.bufferQueue.push(`${BUFFER_PATH}/loops.js`);
+)
+    .connect(reverb)
+    .toMaster();
