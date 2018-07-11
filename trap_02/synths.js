@@ -25,7 +25,7 @@ synth = new Tone.PolySynth(6, Tone.Synth, {
         partials: [0, 2, 3, 4],
     },
 })
-    .chain(tremolo, freeverb)
+    // .chain(tremolo, freeverb)
     .toMaster();
 
 leadSynth = new Tone.PolySynth(6, Tone.Synth, {
@@ -33,7 +33,7 @@ leadSynth = new Tone.PolySynth(6, Tone.Synth, {
         partials: [0, 2, 3, 4],
     },
 })
-    .chain(delay, freeverb)
+    // .chain(delay, freeverb)
     // .connect(reverb)
     // .connect(feedbackDelay)
     .toMaster();

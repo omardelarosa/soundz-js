@@ -1,7 +1,7 @@
 // Edit this file while running the server to update loops in real time
 
 loop('synth', async ctx => {
-    // Update chord state
+    // // Update chord state
     chord = chords[next4()];
     const chr = notes.map(n => scale[n + chord]);
     chr.forEach(n => {
@@ -16,6 +16,7 @@ loop('synth', async ctx => {
 loop('leadSynth', async ctx => {
     // const since = Date.now() - ctx.last;
     // ctx.last = Date.now();
+    // console.log('since', since);
     const n = _sample(
         notes.map(n => {
             return scale[n + chord];
@@ -24,19 +25,20 @@ loop('leadSynth', async ctx => {
     // const { note, oct } = noteParse(n);
     // Synth.play('piano', note, oct, 0.2);
     playInst(leadSynth, n, 100);
-    ctx.sleep(M / 16);
+    ctx.sleep(T / 4);
 });
 
 loop('kicks', async ctx => {
-    const pulse = ctx.tick % 16;
+    const pulse = beatFromTick(ctx.tick);
+    console.log('kick:pulse', pulse);
     // Switch pattern on the 0
     if (pulse === 0) kick_pattern = _sample(kicks);
-    if (!kick_pattern[pulse]) return ctx.sleep(M / 16);
+    if (!kick_pattern[pulse]) return ctx.sleep(T / 4);
 
     // Play kick beat
     playInst(sampler, NOTE_KICK);
 
-    ctx.sleep(M / 16);
+    ctx.sleep(T / 4);
 });
 
 h_counter = 0;
@@ -60,14 +62,15 @@ loop('hats', async ctx => {
     } else {
         h_counter++;
     }
-    ctx.sleep(M / 16);
+    ctx.sleep(t);
 });
 
 loop('snares', async ctx => {
-    const pulse = ctx.tick % 16;
-    // Switch pattern on the 0
+    const pulse = beatFromTick(ctx.tick);
+    console.log('snare:pulse', pulse);
+    // // Switch pattern on the 0
     if (pulse === 0) snares_pattern = _sample(snares);
-    if (!snares_pattern[pulse]) return ctx.sleep(M / 16);
+    if (!snares_pattern[pulse]) return ctx.sleep(T / 4);
     playInst(sampler, NOTE_CLAP);
-    ctx.sleep(M / 16);
+    ctx.sleep(T / 4);
 });

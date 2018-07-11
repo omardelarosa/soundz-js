@@ -20,6 +20,8 @@ nextOf = max => {
     };
 };
 
+beatFromTick = t => Math.floor((t / (T / 4)) % 16);
+
 next4 = nextOf(4);
 
 kicks = [
