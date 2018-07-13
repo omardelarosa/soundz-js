@@ -21,6 +21,8 @@ nextOf = max => {
 };
 
 beatFromTick = t => Math.floor((t / (T / 4)) % 16);
+tickToMS = t => SQCR.Transport.cl;
+expectedMS = ticks => sqcr.tickToMS() * ticks;
 
 next4 = nextOf(4);
 
@@ -36,13 +38,15 @@ kick_pattern = _sample(kicks);
 
 hats = [
     [M / 16, 4],
-    [M / 16, 4],
-    [M / 16, 4],
-    [M / 16, 4],
+    // [M / 16, 4],
+    // [M / 16, 4],
+    // [M / 16, 4],
     // [M / 12, 3],
-    // [M / 32, 8],
+    [M / 32, 8],
     // [M / 24, 6],
-    // [M / 24, 6],
+    [M / 24, 6],
+    [M / 48, 12],
+    [M / 64, 16],
 ];
 
 // Keeps track of hi-hat hits

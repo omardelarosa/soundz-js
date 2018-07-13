@@ -10,5 +10,6 @@
         "/trap_02/init.js",
         "/trap_02/synths.js",
         "/trap_02/loops.js"
-    ]
+    ],
+    "rendererPath": "renderer.js"
 }
